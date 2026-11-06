@@ -1,0 +1,16 @@
+{
+  "name": "claude-pr-overview",
+  "owner": {
+    "name": "Christophe Jossart"
+  },
+  "metadata": {
+    "description": "Skill that writes a triage-first description for large pull requests: what to skip, what to review and why, what to test manually, what to watch when deploying"
+  },
+  "plugins": [
+    {
+      "name": "pr-overview",
+      "source": "./",
+      "description": "Skill that writes a triage-first description for large pull requests: what to skip, what to review and why, what to test manually, what to watch when deploying"
+    }
+  ]
+}
