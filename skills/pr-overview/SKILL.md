@@ -1,49 +1,84 @@
 ---
 name: pr-overview
-description: Use when writing or updating the description of a large pull request that reviewers cannot read line by line (framework or dependency upgrade, release, migration, broad refactor), or when asked for a high-level PR overview, a review guide, what to test manually, or what to watch when deploying.
+description: Use when writing or updating a pull request description that should guide reviewers, especially for large or mixed changes (framework or dependency upgrade, release, migration, broad refactor), or when asked for a PR overview, a review guide, manual testing steps, deploy notes or follow-up tickets for a PR.
 ---
 
 # PR overview
 
 ## Overview
 
-A large PR needs a description that triages, not a changelog. The reviewer
-should know in two minutes what to skip, what to read, what to click through on
-a test environment and what to watch in production. The full detail lives in
-the commits or a linked report; the description points to it.
+A PR description triages; it is not a changelog. Code reviewers learn in two
+minutes what to read and what to skip. People without access to the code
+(product, QA, whoever deploys) get testing steps, deploy notes and follow-ups
+where they already work: the ticket. Full detail stays in the commits or a
+linked report.
 
-## The description, in this order
+## Where each part goes
+
+| Part | Audience | Goes to |
+| --- | --- | --- |
+| Summary, Worth a look, Not worth reviewing | code reviewers | PR description |
+| Manual testing, Deploy attention points, Follow-ups | everyone | ticket comment, when the ticket split applies; otherwise the PR |
+
+**Ticket split** applies when `acli` is installed and authenticated and a
+ticket key is known (branch name, PR title or body, or the user). Read
+`jira.md` for the commands. Without it, everything goes in the PR.
+
+## The PR description, in this order
 
 1. **Ticket link** on the first line, as a Markdown link, when there is a
    ticket.
-2. **`## Summary`**: 2-4 sentences. The headline moves only (the main
-   framework, runtime or component, and the one behaviour change users or
-   operators will notice), then one line on side benefits (security fixes,
-   audit clean). The list of every bumped package belongs in the report or the
-   commits. If the branch has a detailed report or log, link it here with an
-   absolute URL.
-3. **`## Not worth reviewing line by line`**: 3-6 bullets naming *categories*
-   of mechanical change, with a few example paths each: lock files, generated
-   or scaffold files, binary artifacts, deprecation fixes, config written by
-   tools or update scripts, re-rolled patches, renames.
-4. **`## Worth a look in review`**: a two-column table, `Change | Why`, at most
-   10 rows. One row per file or area where reviewer judgment adds value:
-   deploy or process changes, temporary workarounds, pins to unreleased code,
-   deliberate removals, bug fixes that change behaviour, anything touching
-   data. The Why column states the concrete consequence or finding ("fails on
-   the first deploy", "would delete 4,000 rows"), not a restatement of the
-   change.
-5. **`## Manual testing on <pre-production environment>`**: bullets grouped by
-   user-facing area, each starting with a bold area name, then concrete
-   actions and the expected result, with admin paths where they help.
-6. **`## <Production> deploy: attention points`**: deploy order and how it was
-   rehearsed; infrastructure changes (images, runtimes); post-deploy checks
-   with the warnings or drift that are *expected*, so nobody chases them;
-   anything irreversible.
-7. **`## Follow-up release`** (only when this PR schedules work for the next
-   one, such as removing packages it deprecated): one or two lines.
+2. **`## Summary`**: 2-4 sentences. The headline moves only (main framework,
+   runtime or component; the one behaviour change users or operators will
+   notice), then one line on side benefits. Link the detailed report, if the
+   branch has one, with an absolute URL. It answers "am I the right person to
+   review this?".
+3. **`## Worth a look in review`**: table `Change | Why`, at most 10 rows. One
+   row per file or area where reviewer judgment adds value: deploy or process
+   changes, temporary workarounds, pins to unreleased code, deliberate
+   removals, behaviour-changing fixes, anything touching data, and every
+   judgment call you were unsure about. The Why is the concrete consequence
+   ("fails on the first deploy", "would delete 4,000 rows"). For a small PR
+   with nothing risky, write `Nothing needs a closer look.` instead of the
+   table.
+4. **Not worth reviewing**, collapsed:
 
-Then the attribution footer, if the environment requires one.
+   ```markdown
+   <details>
+   <summary>Not worth reviewing line by line</summary>
+
+   - one line per category of mechanical change, with a few example paths
+   </details>
+   ```
+
+   Categories: lock files, generated or scaffold files, binary artifacts,
+   deprecation fixes, config written by tools or update scripts, re-rolled
+   patches, renames. Omit the block when there is nothing mechanical.
+5. With the ticket split: one line, `Testing steps, deploy notes and
+   follow-ups: [<KEY> comment](<comment URL>)`. Without it, the three ticket
+   sections below follow here, with Manual testing inside `<details>`.
+
+When the repo has a PR template (`.github/pull_request_template.md`,
+`.github/PULL_REQUEST_TEMPLATE/`, `docs/` or root), fill in its headings in
+their order instead of adding new ones for the same purpose: the ticket link
+under the heading that asks for related issues (and not on the first line),
+Summary under the heading that asks what or why, testing under the heading
+that asks how it was tested. Then append Worth a look and the collapsed Not
+worth reviewing. Remove the template's HTML comments.
+
+## The ticket sections, in this order
+
+The comment starts with a link to the PR.
+
+1. **Manual testing on <pre-production environment>**: bullets grouped by
+   user-facing area, each starting with a bold area name, then the steps and
+   the expected result. Admin paths where they help.
+2. **<Production> deploy: attention points**: deploy order and how it was
+   rehearsed; infrastructure changes; post-deploy checks with the warnings or
+   drift that are *expected*; anything irreversible.
+3. **Follow-ups**: work this PR schedules (removing packages it deprecated)
+   and unrelated issues found along the way. With the ticket split, each one
+   is proposed as a new ticket (`jira.md`); keep them out of this PR's scope.
 
 ## Size
 
@@ -53,22 +88,21 @@ details) gets one clause where it supports a point, not its own paragraph.
 
 ## Before publishing
 
-- Check every factual claim against evidence from this session (a path, a
-  warning that "will appear", a count). Overviews are read as verified; fix or
-  drop anything you inferred.
-- If the PR already has a description, read it first and keep what the author
-  wrote that this structure has no slot for.
-- Write the body to a file and pass it with `--body-file`, not inline.
+- Check every factual claim against evidence from this session: paths,
+  warnings that "will appear", counts. Fix or drop anything inferred.
+- For a large PR (dozens of commits or files), have a fresh subagent review
+  the draft against `git log` and `git diff --stat` of the branch: it lists
+  every claim the commits or the diff do not support, and anything a reviewer
+  would need that is missing. Fix those before publishing.
+- If the PR already has a description, read it and keep what the author wrote
+  that this structure has no slot for.
+- Show each outward action as a draft and post it only after the user
+  confirms: PR description (`gh pr edit --body-file`), ticket comment, new
+  tickets, review comments.
 
-## Quick reference
+## Review comments (opt-in)
 
-| Section | Size | Content |
-| --- | --- | --- |
-| Summary | 2-4 sentences | what moves, link to report |
-| Not worth reviewing | 3-6 bullets | categories of mechanical change |
-| Worth a look | ≤10 rows | change, concrete why |
-| Manual testing | 4-8 bullets | area, actions, expected result |
-| Deploy attention | 3-6 bullets | order, infra, expected noise, irreversible |
-| Follow-up release | 1-2 lines | only if scheduled |
+When the PR exists and the user wants it, anchor each Worth a look row to its
+lines with a single review of inline comments. Read `review-comments.md`.
 
-See `example.md` for a complete description.
+See `example.md` for a complete PR description and ticket comment.
