@@ -66,6 +66,18 @@ Summary under the heading that asks what or why, testing under the heading
 that asks how it was tested. Then append Worth a look and the collapsed Not
 worth reviewing. Remove the template's HTML comments.
 
+## Ask first
+
+Before drafting the ticket part, ask the user two questions in one message:
+
+1. **Visibility**: public comment, or restricted to a group (list the
+   available groups; `jira.md`)?
+2. **Where each open point goes**: list every follow-up and finding, one line
+   each, with a proposed destination: *task in this ticket*, *deploy
+   instruction*, *note*, *check with the PM*, or *new ticket*. Default to
+   *check with the PM* for findings unrelated to the PR; propose *new ticket*
+   only when the user's process clearly wants one.
+
 ## The ticket sections, in this order
 
 The comment starts with a link to the PR.
@@ -76,9 +88,12 @@ The comment starts with a link to the PR.
 2. **<Production> deploy: attention points**: deploy order and how it was
    rehearsed; infrastructure changes; post-deploy checks with the warnings or
    drift that are *expected*; anything irreversible.
-3. **Follow-ups**: work this PR schedules (removing packages it deprecated)
-   and unrelated issues found along the way. With the ticket split, each one
-   is proposed as a new ticket (`jira.md`); keep them out of this PR's scope.
+3. The open points, placed where the user classified them: *deploy
+   instructions* and *tasks in this ticket* as bullets in section 2 (a task
+   says when it is due, e.g. "next release"), then a **Note** section per
+   note, then **To check with the PM: possible follow-ups**, then **Follow-up
+   tickets** with the keys of the tickets created (`jira.md`). Omit empty
+   sections. Keep all of them out of this PR's scope.
 
 ## Size
 

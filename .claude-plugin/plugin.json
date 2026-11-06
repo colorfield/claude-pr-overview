@@ -1,6 +1,6 @@
 {
   "name": "pr-overview",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Skill that writes pull request descriptions as a review guide (what to review and why, what to skip) and puts testing steps, deploy notes and follow-up tickets in the ticket",
   "author": {
     "name": "Christophe Jossart"

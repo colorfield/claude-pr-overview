@@ -1,7 +1,8 @@
 # Example: framework upgrade
 
 A fictional upgrade of a content site from framework 4 to 5, with a runtime
-bump and the ticket split applied. Shows the level of detail and the order the
+bump and the ticket split applied (an internal comment; open points classified
+by the user). Shows the level of detail and the order the
 skill asks for.
 
 ## PR description
@@ -57,8 +58,17 @@ Testing steps, deploy notes and follow-ups: [SHOP-412 comment](https://acme.exam
   - the status page: the "experimental dashboard" warning is expected;
   - logs of the first scheduled-job run.
 - **Irreversible:** the dashboard migration drops the old settings tables; rolling back needs a database restore.
+- **Task in this ticket (next release):** remove `dashboard-legacy` once every environment has run the migration.
 
-### Follow-ups
+### Note: audit cleanup job
 
-- SHOP-431: remove `dashboard-legacy` once every environment has run the migration.
-- SHOP-432: decide with the job owner whether to enable the cleanup.
+The job is fixed but stays off: its first run would delete about 4,000 audit rows. To confirm with the job owner before enabling it.
+
+### To check with the PM: possible follow-ups
+
+- Replace the unmaintained carousel library.
+- Bug, already in production: product videos fail when the video host's metadata request times out.
+
+### Follow-up tickets
+
+- SHOP-431: move the payment SDK back to a tagged release once upstream ships one.

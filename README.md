@@ -14,9 +14,9 @@ Upgrades, releases and broad refactors produce PRs nobody can read line by line.
 
 4. **Manual testing** on the pre-production environment: steps and expected results.
 5. **Production deploy: attention points**: order, infrastructure changes, the noise that is expected after the deploy, anything irreversible.
-6. **Follow-ups**, proposed as new tickets so the PR stays focused.
+6. **Open points**, each placed where you decide: a task in this ticket, a deploy instruction, a note, a question for the PM, or a new ticket.
 
-The ticket part needs an authenticated [`acli`](https://developer.atlassian.com/cloud/acli/) (Atlassian CLI) and a ticket key. Without them, everything goes in the PR. A repo's PR template is filled in, not replaced. Every post (PR description, ticket comment, new tickets) is shown as a draft first.
+The ticket part needs an authenticated [`acli`](https://developer.atlassian.com/cloud/acli/) (Atlassian CLI) and a ticket key. Without them, everything goes in the PR. A repo's PR template is filled in, not replaced. Before drafting the ticket part, the skill asks whether the comment is public or restricted to a group, and where each open point goes. Every post (PR description, ticket comment, new tickets) is shown as a draft first.
 
 Optionally, the rows of the Worth a look table become inline review comments on the lines they refer to, in one review.
 
